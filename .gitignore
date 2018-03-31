@@ -28,3 +28,7 @@ out/
 .project
 .classpath
 .iml
+META-INF/
+
+# Python
+venv/
