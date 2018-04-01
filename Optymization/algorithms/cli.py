@@ -1,16 +1,16 @@
 # commands for algo
 ALGO_TABU = '0'
-ALGO_SA = '1'
+ALGO_SA   = '1'
 
 # commands for options
-OPT_QUIT = '0'
-OPT_RUN = '1'
-OPT_CFG = '2'
-OPT_ALGO = '3'
-OPT_DATA = '4'
-OPT_PROC = '5'
+OPT_QUIT  = '0'
+OPT_RUN   = '1'
+OPT_CFG   = '2'
+OPT_ALGO  = '3'
+OPT_DATA  = '4'
+OPT_PROC  = '5'
 
-OPT_MAX = '5'
+OPT_MAX   = '5'
 
 # list of all commands
 COMMANDS = [
@@ -76,15 +76,14 @@ class Cli :
         print(USR_CHOICE)
         choiceAlgo = input(USR_INPUT)
         if choiceAlgo == ALGO_TABU :
-            __showMenu()
+            Cli.__showMenu()
 
     @staticmethod
     def __showMenu():
         print(
             "== MAIN\n"
             "MENU\n"
-            "** 1 / Run\n"
-            "with current parameters\n"
+            "** 1 / Run with current parameters\n"
             "** 2 / See current parameters\n"
             "** 3 / Change algorithm\n"
             "** 4 / Change data\n"
@@ -92,4 +91,23 @@ class Cli :
             "** 0 / Leave CLI\n"
         )
         choice = input(USR_INPUT)
-        if 
+        if choice == OPT_RUN:
+            Cli.__run()
+        if choice == OPT_CFG:
+            Cli.__printData()
+        if choice == OPT_ALGO:
+            Cli.__chooseAlgorithm()
+        if choice == OPT_DATA:
+            Cli.__specifyData()
+        if choice == OPT_PROC:
+            Cli.__specifyNumberProcess()
+        if choice == OPT_QUIT:
+            """leave cli"""
+
+    @staticmethod
+    def __run():
+        print("run")
+
+    @staticmethod
+    def __printData():
+        print("Data")
