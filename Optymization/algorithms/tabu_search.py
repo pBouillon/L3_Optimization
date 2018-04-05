@@ -52,7 +52,8 @@ class TabuSearch(Optimizer):
                     self.__tabus[::-1][0]
                 )
 
-        return best_sol
+            yield best_sol
+        # return best_sol
 
     def stop_search(self) -> bool:
         """

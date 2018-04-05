@@ -1,7 +1,7 @@
 # commands for algo
 from random import randint
 
-from optimizer import DEFAULT_MAX_IT
+from optimizer import DEFAULT_MAX_IT, Optimizer
 from simulated_annealing import SimulatedAnnealing, DEFAULT_COOLING, DEFAULT_TEMP
 from tabu_search import TabuSearch
 
@@ -64,7 +64,7 @@ class CLI:
 
     procs = 0
     data  = []
-    sol   = {}
+    sols  = None
 
     @staticmethod
     def __get_usr_input() -> int:
@@ -108,11 +108,23 @@ class CLI:
         """
         :return:
         """
-        for key, values in CLI.sol.items():
-            print(
-                '**\t' + str(key) + ': ' + str(values)
-                + '**\n\t\ttotal: ' + str(sum(values))
-            )
+        print('** With which step do you want to display solutions? ( < 2 means all)')
+        step = CLI.__get_usr_input()
+
+        cpt = 0
+        for sol in CLI.sols:
+            cpt += 1
+
+            if cpt % step != 0:
+                continue
+
+            print('**\n** ---------------------')
+            print('** [Solution n°' + str(cpt) + '] CMax: ' + str(Optimizer.c_max(sol)) + '\n**')
+            for key, values in sol.items():
+                print(
+                    '**\t' + str(key) + ': ' + str(values)
+                    + '\n**\t\ttotal: ' + str(sum(values))
+                )
 
     @staticmethod
     def __specify_processes_number() -> int:
@@ -230,11 +242,11 @@ class CLI:
 
         print('\n=== SEARCH')
         rand = CLI.__get_usr_random()
-        CLI.sol = solver.search(rand)
+        CLI.sols = solver.search(rand)
 
         print('\n=== FOUND')
-        print('** Went through ' + str(solver.get_iterations() - 1) + ' iteration.s')
         CLI.__show_solution()
+        print('**\n** Went through ' + str(solver.get_iterations() - 1) + ' iteration.s')
 
     @staticmethod
     def __print_config():

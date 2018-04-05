@@ -2,10 +2,9 @@ from copy import deepcopy
 from math import exp
 from random import choice, random
 
-from algorithms.optimizer import Optimizer
+from algorithms.optimizer import Optimizer, DEFAULT_MAX_IT
 
-
-DEFAULT_TEMP    = 100
+DEFAULT_TEMP    = 10
 DEFAULT_COOLING = .99
 
 
@@ -46,8 +45,9 @@ class SimulatedAnnealing(Optimizer):
                 best_time = self.c_max(best_sol)
 
             self.__temp *= self.__cooling
+            yield best_sol
 
-        return best_sol
+        # return best_sol
 
     def stop_search(self):
         """
@@ -58,5 +58,18 @@ class SimulatedAnnealing(Optimizer):
 
 
 if __name__ == '__main__':
-    solver = SimulatedAnnealing(3, [5, 2, 6, 1, 7], 10000, DEFAULT_TEMP, DEFAULT_COOLING)
-    print(solver.search(True))
+    solver = SimulatedAnnealing(
+        5,
+        [7, 14, 2, 1, 8, 15, 8, 4, 5, 9, 7, 3, 15, 11, 8, 5, 6, 9, 2, 15, 3, 13, 5, 11, 13, 9, 14, 3, 2, 7],
+        DEFAULT_MAX_IT,
+        DEFAULT_TEMP,
+        DEFAULT_COOLING)
+
+    for sol in solver.search(True):
+        print('\n---------------------')
+        print('** CMax: ' + str(Optimizer.c_max(sol)))
+        for key, values in sol.items():
+            print(
+                '**\t' + str(key) + ': ' + str(values)
+                + '\n**\t\ttotal: ' + str(sum(values))
+            )
