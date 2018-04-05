@@ -85,9 +85,10 @@ class CLI:
         :return: user input as integer
         """
         usr_inp = input(USR_INPUT)
-        while not usr_inp.isdigit():
-            print('~~ WRONG TYPE, expected a float')
-            usr_inp = input(USR_INPUT)
+        # FIXME
+        # while isinstance(usr_inp, float):
+        #     print('~~ WRONG TYPE, expected a float')
+        #     usr_inp = input(USR_INPUT)
         return float(usr_inp)
 
     @staticmethod

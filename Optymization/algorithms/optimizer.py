@@ -2,10 +2,9 @@ import copy
 from abc import ABC
 from abc import abstractmethod
 
-from random import randint
+from random import randint, choice
 
-
-DEFAULT_MAX_IT = 500
+DEFAULT_MAX_IT = 1000
 
 
 class Optimizer(ABC):
@@ -74,6 +73,26 @@ class Optimizer(ABC):
                         neighbors.append(successor)
 
         return neighbors
+
+    def get_random_neighbor(self, state: dict) -> dict:
+        """
+        :param state:
+        :return:
+        """
+        proc_source = randint(0, self._nb_proc - 1)
+        while not state[proc_source]:
+            proc_source = randint(0, self._nb_proc - 1)
+        task_id = choice(state[proc_source])
+
+        proc_dest = randint(0, self._nb_proc - 1)
+        while proc_dest == proc_source:
+            proc_dest = randint(0, self._nb_proc - 1)
+
+        successor = copy.deepcopy(state)
+        successor[proc_source].remove(task_id)
+        successor[proc_dest].append(task_id)
+
+        return successor
 
     def set_max_it(self, new_max: int):
         """

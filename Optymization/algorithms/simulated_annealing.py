@@ -1,11 +1,11 @@
 from copy import deepcopy
 from math import exp
-from random import choice, random
+from random import random
 
 from algorithms.optimizer import Optimizer, DEFAULT_MAX_IT
 
-DEFAULT_TEMP    = 10
-DEFAULT_COOLING = .99
+DEFAULT_TEMP    = 1
+DEFAULT_COOLING = .01
 
 
 class SimulatedAnnealing(Optimizer):
@@ -24,6 +24,7 @@ class SimulatedAnnealing(Optimizer):
         if new_cost < best_cost:
             return 1.
 
+        # else: metropolitan method
         return exp(-(new_cost - best_cost) / self.__temp)
 
     def search(self, rng: bool) -> dict:
@@ -37,14 +38,16 @@ class SimulatedAnnealing(Optimizer):
         best_time = self.c_max(best_sol)
 
         while not self.stop_search():
-            current_sol = choice(self.get_neighbors(current_sol))
+            current_sol = self.get_random_neighbor(current_sol)
             local_time = self.c_max(current_sol)
 
             if self.__acceptance(best_time, local_time) > random():
                 best_sol = deepcopy(current_sol)
                 best_time = self.c_max(best_sol)
 
-            self.__temp *= self.__cooling
+            self.__temp -= self.__cooling
+
+            print(self.__temp)
             yield best_sol
 
         # return best_sol
