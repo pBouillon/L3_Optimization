@@ -5,6 +5,9 @@ from abc import abstractmethod
 from random import randint
 
 
+DEFAULT_MAX_IT = 500
+
+
 class Optimizer(ABC):
     """
     """
@@ -16,7 +19,8 @@ class Optimizer(ABC):
         self._max_it = max_it
         self._iteration = 0
 
-    def c_max(self, solution: dict) -> int:
+    @staticmethod
+    def c_max(solution: dict) -> int:
         """
         :param solution:
         :return:
@@ -34,7 +38,7 @@ class Optimizer(ABC):
         :return:
         """
         s0 = {}
-        self.__iteration = 0
+        self._iteration = 0
 
         for i in range(self._nb_proc):
             s0[i] = []
@@ -76,13 +80,13 @@ class Optimizer(ABC):
         :param new_max:
         :return:
         """
-        self.__max_it = new_max
+        self._max_it = new_max
 
     def get_iterations(self) -> int:
         """
         :return:
         """
-        return self.__iteration
+        return self._iteration
 
     @abstractmethod
     def search(self, rng: bool):

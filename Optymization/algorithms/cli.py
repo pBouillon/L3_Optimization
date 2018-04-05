@@ -1,26 +1,30 @@
 # commands for algo
+from random import randint
+
+from optimizer import DEFAULT_MAX_IT
+from simulated_annealing import SimulatedAnnealing, DEFAULT_COOLING, DEFAULT_TEMP
+from tabu_search import TabuSearch
+
 ALGO_TABU = 0
 ALGO_SA   = 1
 
 # commands for options
-OPT_QUIT  = 0
-OPT_RUN   = 1
-OPT_CFG   = 2
-OPT_ALGO  = 3
-OPT_DATA  = 4
-OPT_PROC  = 5
+OPT_QUIT = 0
+OPT_RUN  = 1
+OPT_CFG  = 2
+OPT_DATA = 3
+OPT_PROC = 4
 
-OPT_MAX   = 5
+OPT_MAX = 5
 
 # list of all commands
 COMMANDS = [
-    OPT_ALGO,
-    OPT_CFG ,
+    OPT_CFG,
     OPT_DATA,
     OPT_PROC,
     OPT_QUIT,
-    OPT_RUN ,
-    ALGO_SA ,
+    OPT_RUN,
+    ALGO_SA,
     ALGO_TABU
 ]
 
@@ -29,8 +33,7 @@ USR_CHOICE = """
 === ALGORITHM CHOICE
 ** Algorithm choice:
 ** """ + str(ALGO_TABU) + """ / Tabu search
-** """ + str(ALGO_SA)   + """ / Simulated annealing
-"""
+** """ + str(ALGO_SA) + """ / Simulated annealing """
 USR_INPUT = "solver > "
 USR_INTRO = """
 ===
@@ -47,13 +50,11 @@ USR_INTRO = """
 """
 USR_MENU = """
 === MENU
-** """ + str(OPT_RUN)  + """ / Run with current parameters
-** """ + str(OPT_CFG)  + """ / See current parameters
-** """ + str(OPT_ALGO) + """ / Change algorithm
+** """ + str(OPT_RUN) + """ / Run with current parameters
+** """ + str(OPT_CFG) + """ / See current parameters
 ** """ + str(OPT_DATA) + """ / Change data
 ** """ + str(OPT_PROC) + """ / Change number of processes
-** """ + str(OPT_QUIT) + """ / Exit
-"""
+** """ + str(OPT_QUIT) + """ / Exit """
 
 
 class CLI:
@@ -61,53 +62,111 @@ class CLI:
     Class grouping several static methods to build the CLI
     """
 
+    procs = 0
+    data  = []
+    sol   = {}
+
     @staticmethod
-    def __get_usr_input() -> int :
+    def __get_usr_input() -> int:
         """
         Get the user input and ensure that it's an int
         :return: user input as integer
         """
         usr_inp = input(USR_INPUT)
         while not usr_inp.isdigit():
-            print ('~~ WRONG TYPE, expected an integer')
+            print('~~ WRONG TYPE, expected an integer')
+            usr_inp = input(USR_INPUT)
         return int(usr_inp)
 
     @staticmethod
-    def __show_tasks_repartition():
+    def __get_usr_float() -> float:
         """
-
-        :return:
+        Get the user input and ensure that it's an int
+        :return: user input as integer
         """
-        print (USR_INTRO)
+        usr_inp = input(USR_INPUT)
+        while not usr_inp.isdigit():
+            print('~~ WRONG TYPE, expected a float')
+            usr_inp = input(USR_INPUT)
+        return float(usr_inp)
 
     @staticmethod
-    def __specify_processes_number() -> str:
+    def __get_usr_random() -> bool:
+        """
+        :return:
+        """
+        print('** Generate s0 randomly? (YES 1 / NO 0)')
+        usr_inp = input(USR_INPUT)
+        while not usr_inp.isdigit() \
+                and usr_inp is not '0' \
+                and usr_inp is not '1':
+            print('~~ WRONG INPUT, expected an integer equal to 0 or 1')
+        return True if usr_inp is '1' else False
+
+    @staticmethod
+    def __show_solution():
+        """
+        :return:
+        """
+        for key, values in CLI.sol.items():
+            print(
+                '**\t' + str(key) + ': ' + str(values)
+                + '**\n\t\ttotal: ' + str(sum(values))
+            )
+
+    @staticmethod
+    def __specify_processes_number() -> int:
         """
 
         :return:
         """
-        print ('** Please specify how many processes you have')
-        return input(USR_INPUT)
+        print('** With how many processes do you want to work? (0 for random)')
+        proc = CLI.__get_usr_input()
+        return proc if proc > 0 else randint(0, 50)
 
     @staticmethod
     def __specify_data() -> list:
         """
-
         :return:
         """
-        print (
-            '** Tasks durations (separated by ' '; ex: 5 7 6 1 2 4)'
-        )
-        data = input(USR_INPUT)
-        return data.split()
+        print('** How many tasks do you want to generate?')
+        tasks = CLI.__get_usr_input()
+
+        print('** What should be their maximum value?')
+        max_val = CLI.__get_usr_input()
+
+        return [randint(1, max_val) for _ in range(tasks)]
 
     @staticmethod
-    def __choose_algorithm():
-        """
+    def __alter_data():
+        print('\n=== NEW CONFIGURATION')
+        CLI.data = CLI.__specify_data()
 
+        CLI.__print_config()
+
+    @staticmethod
+    def __alter_proc():
+        print('\n=== NEW CONFIGURATION')
+        CLI.procs = CLI.__specify_processes_number()
+
+        CLI.__print_config()
+
+    @staticmethod
+    def __choose_algorithm() -> int:
+        """
         :return:
         """
-        print (USR_CHOICE)
+        print(USR_CHOICE)
+        usr_inp = input(USR_INPUT)
+        while not usr_inp.isdigit() \
+                and int(usr_inp) != ALGO_TABU \
+                and int(usr_inp != ALGO_SA):
+            print(
+                '~~ WRONG INPUT, expected an integer equal to '
+                + str(ALGO_TABU) + ' or '
+                + str(ALGO_SA)
+            )
+        return int(usr_inp)
 
     @staticmethod
     def __show_menu():
@@ -115,40 +174,87 @@ class CLI:
 
         :return:
         """
-        print (USR_MENU)
-        choice = CLI.__get_usr_input()
+        choice = OPT_RUN
 
-        if choice == OPT_RUN:
-            CLI.__run()
+        while choice != OPT_QUIT:
+            print(USR_MENU)
+            choice = CLI.__get_usr_input()
 
-        elif choice == OPT_CFG:
-            CLI.__print_data()
+            if choice == OPT_RUN:
+                CLI.__run()
 
-        elif choice == OPT_ALGO:
-            CLI.__choose_algorithm()
+            elif choice == OPT_CFG:
+                CLI.__print_config()
 
-        elif choice == OPT_DATA:
-            CLI.__specify_data()
+            elif choice == OPT_DATA:
+                CLI.__alter_data()
 
-        elif choice == OPT_PROC:
-            CLI.__specify_processes_number()
+            elif choice == OPT_PROC:
+                CLI.__alter_proc()
 
-        elif choice == OPT_QUIT:
-            print ('=== CLOSING CLI')
-            exit (0)
+        print('=== CLOSING CLI')
+        exit(0)
 
     @staticmethod
     def __run():
         """
-
         :return:
         """
-        print("run")
+        algo_id = CLI.__choose_algorithm()
+        if algo_id == ALGO_TABU:
+            print('** Specify the tabu size:')
+            tab_size = CLI.__get_usr_input()
+
+            solver = TabuSearch(
+                CLI.procs,
+                CLI.data,
+                DEFAULT_MAX_IT,
+                tabu_size=tab_size
+            )
+        else:
+            print('** Initial temperature (0 for default value -> ' + str(DEFAULT_TEMP) + ')')
+            temp = CLI.__get_usr_input()
+            temp = temp if temp != 0 else DEFAULT_TEMP
+
+            print('** Initial cooling (0 for default value -> ' + str(DEFAULT_COOLING) + ')')
+            cooling = CLI.__get_usr_float()
+            cooling = cooling if cooling != 0 else DEFAULT_COOLING
+
+            solver = SimulatedAnnealing(
+                CLI.procs,
+                CLI.data,
+                DEFAULT_MAX_IT,
+                temp_init=temp,
+                cooling=cooling
+            )
+
+        print('\n=== SEARCH')
+        rand = CLI.__get_usr_random()
+        CLI.sol = solver.search(rand)
+
+        print('\n=== FOUND')
+        print('** Went through ' + str(solver.get_iterations() - 1) + ' iteration.s')
+        CLI.__show_solution()
 
     @staticmethod
-    def __print_data():
+    def __print_config():
         """
-
         :return:
         """
-        print("Data")
+        print('\n=== ENVIRONMENT')
+        print('** procs: ' + str(CLI.procs))
+        print('** data : ' + str(CLI.data))
+
+    @staticmethod
+    def start():
+        """
+        :return:
+        """
+        print(USR_INTRO)
+
+        print('=== CONFIGURATION')
+        CLI.procs = CLI.__specify_processes_number()
+        CLI.data = CLI.__specify_data()
+
+        CLI.__print_config()
+        CLI.__show_menu()
