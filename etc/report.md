@@ -31,7 +31,6 @@ solution[procD] <- solution[procD] + task
 
 * Affichage des n solutions finales avec n entré par l'utilisateur (exemple d'affichage:)
 ```python
-** ---------------------
 ** [Solution n°6] CMax: 21
 **
 **  0: [8, 10]
@@ -62,11 +61,11 @@ solution[procD] <- solution[procD] + task
 
 ## Web
 ### Recherche taboue
-    * [University article] https://homepages.laas.fr/huguet/drupal/sites/homepages.laas.fr.huguet/files/u78/5IL_BOC_Recherche_tabou.pdf
+* [University article](https://homepages.laas.fr/huguet/drupal/sites/homepages.laas.fr.huguet/files/u78/5IL_BOC_Recherche_tabou.pdf)
 
 ### Recuit simulé
-    * [Katrina Ellison Geltman] http://katrinaeg.com/simulated-annealing.html
+* [Katrina Ellison Geltman](http://katrinaeg.com/simulated-annealing.html)
 
 ## Autres
-    * [Our lessons] (https://arche.univ-lorraine.fr/pluginfile.php/978758/mod_resource/content/3/6-Metaheuristiques.pdf)
+* [Our lessons](https://arche.univ-lorraine.fr/pluginfile.php/978758/mod_resource/content/3/6-Metaheuristiques.pdf)
     
