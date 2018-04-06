@@ -1,6 +1,5 @@
 package optimization.algorithms;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,8 +11,10 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
     }
 
     private double acceptanceProb (int bestCost, int newCost) {
+        // best solution always accepted
         if (bestCost < newCost) return 1. ;
-        return Math.exp ((bestCost - newCost) / temperature) ;
+        // else evaluate the condition of Metropolis
+        return Math.exp (-(newCost - bestCost) / temperature) ;
     }
 
     @Override
@@ -31,20 +32,20 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
         // keeping track of the last solution time
         int currentSolutionTime ;
 
-        //
-        ArrayList<HashMap<Integer, int[]>> neighbors ;
-
         // randomly picking a neighbor
-        neighbors = getNeighbors() ;
-        currentSolution = neighbors.get (r.nextInt(neighbors.size())) ;
+        currentSolution = getRandomNeighbors() ;
 
         currentSolutionTime = c_max(currentSolution) ;
 
+        ++stagnation ;
+        // Checking acceptance for the new solution
         if (acceptanceProb(bestSolutionTime, currentSolutionTime) > r.nextInt()) {
+            stagnation = 0 ;
             currentBestSolution = new HashMap<>(currentSolution) ;
             bestSolutionTime = currentSolutionTime ;
         }
 
+        // cooling the current temperature by 1%
         temperature *= cooling ;
 
         return currentBestSolution ;
@@ -57,8 +58,8 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 
     @Override
     public boolean stopSearch() {
-        double tempMin = 0.00001 ;
-        return temperature  < tempMin ;
+        double tempMin = 0.01 ;
+        return temperature  < tempMin || stagnation >= stagnationTrigger;
     }
 
     @Override

@@ -4,22 +4,17 @@
 
 ## Généralités
 * Données de bases :
-    * Nombre de processeurs à définir par l'utilisateur (si 0, aléatoire)
+    * Nombre de processeurs à définir par l'utilisateur
     * Nombre de taches à définir par l'utilisateur
-    * La durée de chaque tache est aléatoire de 0 jusqu'à une limite fixée par l'utilisateur
+    * La durée de chaque tache est aléatoire de 0 jusqu'à 100
 
-* Un etat est représenté par un dictionnaire de forme:
-```python
-solution = {
-    # proc : [task, task2, ...]
-    0: [2, 5],
-    1: [3, 7],
-    2: [1, 4],
-    # ...
-}
+* Un etat est représenté par une hashmap de forme:
+```
+processeur: [tache0, tache1, tache2],
+// ...
 ```
 
-* Le critère d'arrêt commun est le dépassement nombre d'itération (d'un maximum de 1000)
+* Le critère d'arrêt commun est le fait de revoir n fois la même solution (n fixé par l'utilisateur)
 
 * Un mouvement est calculé comme le passage d'une tache d'un processeur à un autre:
 ```
@@ -33,24 +28,21 @@ solution[procD] <- solution[procD] + task
  
 * Affichage des n solutions finales avec n entré par l'utilisateur (exemple d'affichage:)
 ```
-** [Solution n°6] CMax: 21
+** --------------------------------------------- 
+** Solution at iteration n°13 : 
+**     0: [0, 6, 8, 11, 11, 15, 24, 38, 59, 63, 72, 83, 94]
+**     1: [3, 10, 20, 20, 30, 34, 42, 42, 46, 74, 81, 82]
+**     2: [5, 17, 36, 45, 56, 67, 81, 84, 93]
+**     3: [25, 73, 77, 80, 95, 95]
+**     4: [7, 21, 24, 45, 47, 54, 58, 63, 79, 85]
 **
-**  0: [8, 10]
-**      total: 18
-**  1: [9, 10, 2]
-**      total: 21
-**  2: [7, 5, 6, 3]
-**      total: 21
-**  3: [9, 10]
-**      total: 19
-**  4: [7, 4, 5, 5]
-**      total: 21
-**
+** Current c_max: 484 (solution seen 8 time.s)
+** --------------------------------------------- 
 ```
 
 ## Recuit simulé
-* Température initiale de __ (modifiable par l'utilisateur)
-* Température minimale avant arrêt de __ (modifiable par l'utilisateur)
+* Température initiale entrée par l'utilisateur
+* Température minimale avant arrêt de 0.01, refroidissement de 1% par itération
 * Choix de l'état voisin aléatoire:
     * Génération aléatoire de l'état plutot que choix aléatoire d'un état dans tous ceux générés
     * Choix aléatoire du processeur source, destination et de la tache

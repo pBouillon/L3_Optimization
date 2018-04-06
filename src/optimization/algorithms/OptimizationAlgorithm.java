@@ -132,6 +132,43 @@ public abstract class OptimizationAlgorithm {
     }
 
     /**
+     * Search for a neighbor of `currentSolution`
+     * @return a randomly generated neighbor
+     */
+    HashMap<Integer, int[]> getRandomNeighbors() {
+        HashMap<Integer, int[]> successor = new HashMap<>(currentSolution) ;
+
+        List<Integer> stash = new ArrayList<>() ;
+
+        int procSource = (int) (Math.random() * nbProcess);
+        int taskID     = (int) (Math.random() * currentSolution.get(procSource).length) ;
+
+        int procDest   = (int) (Math.random() * nbProcess);
+        while (procSource == procDest) procDest = (int) (Math.random() * nbProcess);
+
+        // updating source proc dest
+        for (int val : currentSolution.get(procDest)) stash.add(val) ;
+        stash.add(currentSolution.get(procSource)[taskID]) ;
+        successor.put (
+                procDest,
+                stash.stream().mapToInt(value->value).toArray()
+        ) ;
+
+        // updating source proc values
+        stash.clear() ;
+
+        for (int val : currentSolution.get(procSource)) stash.add(val) ;
+        stash.remove(taskID) ;
+
+        successor.put (
+                procSource,
+                stash.stream().mapToInt(value->value).toArray()
+        ) ;
+
+        return successor ;
+    }
+
+    /**
      * Search for neighbors of `currentSolution`
      * @return neighbors states
      */

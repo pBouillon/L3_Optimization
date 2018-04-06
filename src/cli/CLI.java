@@ -7,14 +7,12 @@ import optimization.algorithms.TabuSearch;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import static cli.Text.*;
 
 public class CLI {
-
     private static Scanner input = new Scanner(System.in) ;
     private static int MAX_RAND_VAL = 100 ;
 
@@ -25,11 +23,6 @@ public class CLI {
     private static int nbProc ;
     private static int[] data ;
     private static OptimizationAlgorithm algorithm ;
-
-    // interface display
-    private static int tabuLimit ;
-    private static int initTemp  ;
-
     /**
      *
      */
@@ -55,32 +48,6 @@ public class CLI {
                 algorithm = new SimulatedAnnealing(nbProc) ;
                 break ;
         }
-    }
-
-    /**
-     *
-     */
-    private static int[] getUsrArrayInput() {
-        String   rawData ;
-        String[] splittedData ;
-
-        int[] _data ;
-        do {
-            rawData = getUsrInput();
-            splittedData = rawData.split("\\s+") ;
-
-            try {
-                _data = new int[splittedData.length] ;
-                for (int i = 0; i < splittedData.length; ++i) {
-                    _data[i] = Integer.parseInt(splittedData[i]) ;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println(ERR_BAD_TYPE) ;
-                _data = new int[]{} ;
-            }
-        } while (_data.length < 1) ;
-
-        return _data ;
     }
 
     /**
@@ -150,14 +117,14 @@ public class CLI {
         System.out.println ("== DATA") ;
 
         System.out.println ("** Tasks to generate: ") ;
-        int nb = getUsrNumericInput(1) ;
+        data = new int[getUsrNumericInput()] ;
 
-        data = new int[nb] ;
-        for (int i = 0; i < nb; ++i) {
+        for (int i = 0; i < data.length - 1; ++i) {
             data[i] = (int) (Math.random() * MAX_RAND_VAL) ;
         }
 
-        System.out.println ("** Current data are now" + Arrays.toString (data) + "\n") ;
+        System.out.println ("** Current data are now : \n\t" + Arrays.toString (data)) ;
+        System.out.println();
 
         updateSolver() ;
     }
@@ -204,7 +171,7 @@ public class CLI {
                 break ;
             case ALGO_SA :
                 System.out.println ("** Specify initial temperature: ") ;
-                System.out.println ("** (after each iteration T = T * .9 until T == .1)") ;
+                System.out.println ("** (after each iteration T *= .99 until T == .01)") ;
                 algorithm.setInitialTemp(getUsrDoubleInput());
                 break ;
         }
@@ -271,10 +238,15 @@ public class CLI {
         nbProc = getUsrNumericInput() ;
 
         // data
-        System.out.println() ;
-        System.out.println ("** Tasks durations (separated by ' '): ") ;
-        System.out.println ("** (example: '5 7 6 1 2 4')") ;
-        data = getUsrArrayInput() ;
+        System.out.println ("** Tasks to generate: ") ;
+        data = new int[getUsrNumericInput()] ;
+
+        for (int i = 0; i < data.length - 1; ++i) {
+            data[i] = (int) (Math.random() * MAX_RAND_VAL) ;
+        }
+
+        System.out.println ("** Current data are now : \n\t" + Arrays.toString (data)) ;
+        System.out.println();
 
         // algorithm
         System.out.println (MESSAGE_ALGO) ;
