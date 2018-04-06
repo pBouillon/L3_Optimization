@@ -11,8 +11,10 @@
 * Un etat est représenté par un dictionnaire de forme:
 ```python
 solution = {
-    proc0: [task0, task1],
-    proc1: [task2, task3],
+    # proc : [task, task2, ...]
+    0: [2, 5],
+    1: [3, 7],
+    2: [1, 4],
     # ...
 }
 ```
@@ -28,9 +30,9 @@ task  <- tache du processeur d'origine
 solution[procS] <- solution[procS] - task
 solution[procD] <- solution[procD] + task
 ```
-
+ 
 * Affichage des n solutions finales avec n entré par l'utilisateur (exemple d'affichage:)
-```python
+```
 ** [Solution n°6] CMax: 21
 **
 **  0: [8, 10]
@@ -51,13 +53,18 @@ solution[procD] <- solution[procD] + task
 * Température minimale avant arrêt de __ (modifiable par l'utilisateur)
 * Choix de l'état voisin aléatoire:
     * Génération aléatoire de l'état plutot que choix aléatoire d'un état dans tous ceux générés
+    * Choix aléatoire du processeur source, destination et de la tache
 
 ## Recherche taboue
 * Taille du tableau de base à spécifier par l'utilisateur
+* Choix du successeur:
+    * Generation de successeurs: 
+    tous les mouvements possibles avec la configuration courrante (permutations)
+    * Comparaisons de tous les voisins et sauvegarde du meilleur d'entre tous
 
 # Sources
 ## Books
-    `None`
+* `None`
 
 ## Web
 ### Recherche taboue
