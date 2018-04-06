@@ -41,7 +41,11 @@ class TabuSearch(Optimizer):
             # checking if the solution is faster
             local_time = self.c_max(current_sol)
             if local_time <= best_time:
-                best_sol = deepcopy(current_sol)
+                print('choosen: {} <= {}'.format(local_time, best_time))
+                print_dict(current_sol)
+                print('-------------------')
+                best_sol  = deepcopy(current_sol)
+                best_time = local_time
 
             # adding to tabus
             self.__tabus.append(deepcopy(current_sol))
@@ -52,7 +56,7 @@ class TabuSearch(Optimizer):
                     self.__tabus[::-1][0]
                 )
 
-            yield best_sol
+        yield best_sol
         # return best_sol
 
     def stop_search(self) -> bool:
@@ -61,3 +65,31 @@ class TabuSearch(Optimizer):
         """
         self._iteration += 1
         return self._max_it < self._iteration
+
+
+def print_dict(d):
+    for key, values in d.items():
+        print(
+            '**\t' + str(key) + ': ' + str(values)
+            + '\n**\t\ttotal: ' + str(sum(values))
+        )
+
+if __name__ == '__main__':
+    solver = TabuSearch(
+        3,
+        [5, 7, 6, 2, 3, 1],
+        100,
+        100
+    )
+
+    i = 0
+    for sol in solver.search(True):
+        # print('\n--------------------- ' + str(i))
+        # print('** CMax: ' + str(Optimizer.c_max(sol)))
+        # for key, values in sol.items():
+        #     print(
+        #         '**\t' + str(key) + ': ' + str(values)
+        #         + '\n**\t\ttotal: ' + str(sum(values))
+        #     )
+        # i += 1
+        pass
