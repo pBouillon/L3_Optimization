@@ -7,13 +7,16 @@ import optimization.algorithms.TabuSearch;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import static cli.Text.*;
 
 public class CLI {
+
     private static Scanner input = new Scanner(System.in) ;
+    private static int MAX_RAND_VAL = 100 ;
 
     // Solver
     private static Optimization solver ;
@@ -146,11 +149,15 @@ public class CLI {
     private static void performData() {
         System.out.println ("== DATA") ;
 
-        System.out.println ("** Current data are " + Arrays.toString (data)) ;
-        System.out.println ("** Tasks durations (separated by ' '): ") ;
-        System.out.println ("** (example: '5 7 6 1 2 4')") ;
-        data = getUsrArrayInput() ;
-        System.out.println();
+        System.out.println ("** Tasks to generate: ") ;
+        int nb = getUsrNumericInput(1) ;
+
+        data = new int[nb] ;
+        for (int i = 0; i < nb; ++i) {
+            data[i] = (int) (Math.random() * MAX_RAND_VAL) ;
+        }
+
+        System.out.println ("** Current data are now" + Arrays.toString (data) + "\n") ;
 
         updateSolver() ;
     }
