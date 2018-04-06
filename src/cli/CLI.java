@@ -152,7 +152,7 @@ public class CLI {
         System.out.println ("== Run settings") ;
 
         int rdm ;
-        System.out.println ("** Generate s0 randomly? ") ;
+        System.out.println ("** Generate s0 randomly (improving solution)? ") ;
         System.out.println ("** (YES = 1 / NO = 0)") ;
         do {
             rdm = getUsrNumericInput(0) ;
@@ -175,6 +175,9 @@ public class CLI {
                 algorithm.setInitialTemp(getUsrDoubleInput());
                 break ;
         }
+        System.out.println("** Solution display's step: ");
+        int step = getUsrNumericInput(1) ;
+
         System.out.println () ;
 
         System.out.println ("== Run") ;
@@ -188,15 +191,26 @@ public class CLI {
         ) ;
         while (!algorithm.stopSearch()){
             solution = solver.solve(solution) ;
-            System.out.println ("** Solution at iteration n°" + ++iteration + " : ") ;
-            printSolution (solution) ;
-            System.out.println (
-                    "**\n** Current c_max: " +
-                    algorithm.c_max(solution) +
-                    " (solution seen " + algorithm.getStagnation() + " time.s)"
-            ) ;
-            System.out.println ("** --------------------------------------------- ") ;
+            if (iteration % step == 0) {
+                System.out.println ("** Solution at iteration n°" + ++iteration + " : ") ;
+                printSolution (solution) ;
+                System.out.println (
+                        "**\n** Current c_max: " +
+                                algorithm.c_max(solution) +
+                                " (solution seen " + algorithm.getStagnation() + " time.s)"
+                ) ;
+                System.out.println ("** --------------------------------------------- ") ;
+            }
+            ++iteration ;
         }
+        System.out.println("**\n** FINAL SOLUTION");
+        System.out.println ("** Solution at iteration n°" + ++iteration + " : ") ;
+        printSolution (solution) ;
+        System.out.println (
+                "**\n** Current c_max: " +
+                        algorithm.c_max(solution) +
+                        " (solution seen " + algorithm.getStagnation() + " time.s)"
+        ) ;
 
 
         System.out.println ("** Found in " + (System.currentTimeMillis() - tps) + "ms") ;

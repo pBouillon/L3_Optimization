@@ -1,6 +1,7 @@
 package optimization.algorithms;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
 public abstract class OptimizationAlgorithm {
@@ -140,11 +141,17 @@ public abstract class OptimizationAlgorithm {
 
         List<Integer> stash = new ArrayList<>() ;
 
-        int procSource = (int) (Math.random() * nbProcess);
-        int taskID     = (int) (Math.random() * currentSolution.get(procSource).length) ;
+        int procSource = ThreadLocalRandom.current().nextInt(0, nbProcess);
+        while (currentSolution.get(procSource).length == 0) {
+            procSource = ThreadLocalRandom.current().nextInt(0, nbProcess);
+        }
 
-        int procDest   = (int) (Math.random() * nbProcess);
-        while (procSource == procDest) procDest = (int) (Math.random() * nbProcess);
+        int taskID = ThreadLocalRandom.current().nextInt(0, currentSolution.get(procSource).length);
+
+        int procDest = ThreadLocalRandom.current().nextInt(0, nbProcess);
+        while (procSource == procDest) {
+            procDest = ThreadLocalRandom.current().nextInt(0, nbProcess);
+        }
 
         // updating source proc dest
         for (int val : currentSolution.get(procDest)) stash.add(val) ;

@@ -20,7 +20,7 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
     @Override
     public HashMap<Integer, int[]> searchFor(List<Integer> durations, HashMap<Integer, int[]> state) {
 
-        double cooling = .9 ;
+        double cooling = .99 ;
 
         // s0 -> first state
         currentSolution = state ;
